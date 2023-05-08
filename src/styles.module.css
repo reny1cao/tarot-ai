@@ -1,0 +1,103 @@
+.container {
+  background: lightblue;
+  cursor: url("https://uploads.codesandbox.io/uploads/user/b3e56831-8b98-4fee-b941-0e27f39883ab/Ad1_-cursor.png")
+      39 39,
+    auto;
+  display: flex;
+  align-items: center;
+  height: 100%;
+  justify-content: center;
+}
+.deck {
+  position: absolute;
+  width: 300px;
+  height: 200px;
+  will-change: transform;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+}
+
+.deck > div {
+  background-color: white;
+  background-size: auto 85%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  width: 45vh;
+  max-width: 150px;
+  height: 85vh;
+  max-height: 285px;
+  will-change: transform;
+  border-radius: 10px;
+  box-shadow: 0 12.5px 100px -10px rgba(50, 50, 73, 0.4),
+    0 10px 10px -10px rgba(50, 50, 73, 0.3);
+}
+
+.deckContainer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.c {
+  position: absolute;
+  max-width: 500px;
+  max-height: 500px;
+  width: 90%;
+  height: 95%;
+  cursor: pointer;
+  border-radius: 5px;
+  will-change: transform, opacity;
+}
+
+.front,
+.back {
+  background-size: cover;
+}
+
+.back {
+  background-image: url(https://images.unsplash.com/photo-1544511916-0148ccdeb877?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1901&q=80i&auto=format&fit=crop);
+}
+
+.front {
+  background-image: url(https://images.unsplash.com/photo-1540206395-68808572332f?ixlib=rb-1.2.1&w=1181&q=80&auto=format&fit=crop);
+}
+
+.button {
+  display: flex;
+  justify-content: space-between;  
+  align-items: center;
+  position: absolute;
+  top: 70%;
+}
+
+.emoji {
+  font-size: 5rem; /* set desired font size */
+  line-height: 1; /* remove underline */
+  text-decoration: none;
+  margin-right: 40px;
+}
+
+.input {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 25%;
+  background-color: #a5dae83d; /* use a trendy color scheme */
+  color: #333; /* set the text color */
+  border: none;
+  border-radius: 0;
+  padding: 10px 20px;
+  font-family: 'LXGW WenKai', sans-serif; /* use a modern font */
+  font-size: 30px; 
+  transition: background-color 0.3s ease-in-out, border-bottom 0.3s ease-in-out; /* add transition */
+  border-bottom: 1px solid transparent; /* set initial border to transparent */
+}
+
+.input:focus {
+  outline: none; /* remove default outline */
+  border-bottom-color: #e1989865;
+}
