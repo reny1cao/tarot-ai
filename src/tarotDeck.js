@@ -35,7 +35,7 @@ export function drawCards(numCards, tarotDeck) {
 }
 
 export function getFortuneTelling(seed) {
-  fetch("http://127.0.0.1:5000/api/fortune-telling", {
+  fetch("http://192.168.2.152:5000/api/fortune-telling", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

@@ -10,20 +10,19 @@ import {
 } from "@react-spring/web";
 import { useDrag } from "react-use-gesture";
 import { getDeck, drawCards, getFortuneTelling } from "./tarotDeck.js";
-
+import { Modal } from 'antd';
 import styles from "./styles.module.css";
 import Card from "./Card";
 import Emoji from "react-emoji-render";
 import pokerSound from "./poker2.mp3";
 import io from "socket.io-client";
 import Typewriter from "typewriter-effect";
-
+import SocketIO from "./socketio.js";
 let tarotDeck = getDeck();
 let cardsSelected: string[] = [];
 const sound = new Audio(pokerSound);
 sound.playbackRate = 3.5;
-// const URL = "http://127.0.0.1:5000";
-// const socket = io(URL);
+const socket = io('http://0.0.0.0:5001');
 
 // These two are just helpers, they curate spring data, values that are later being interpolated into css
 const to = (i: number) => ({
@@ -105,6 +104,7 @@ export default function App() {
   const [quest, setQuest] = useState("");
   const seed = {};
   const [message, setMessage] = useState("");
+  const [display, setDisplay] = useState(false);
   const [displayedMessage, setDisplayedMessage] = useState("");
 
   const handleDrawCards = () => {
@@ -120,46 +120,56 @@ export default function App() {
     console.log(response);
   };
 
-  // const handleFortuneTellingStreaming = () => {
-  //   seed["quest"] = quest;
-  //   seed["cards"] = cardsSelected;
-  //   socket.emit("chat_message", seed);
-  // };
+  const handleFortuneTellingStreaming = () => {
+    setMessage("");
+    setDisplay(true);
+    seed["quest"] = quest;
+    seed["cards"] = cardsSelected;
+    socket.emit("chat_message", seed);
+  };
 
   const handleInput = (e) => {
     setQuest(e.target.value);
   };
 
-  // useEffect(() => {
-  //   // add a listener for the chat_message event
-  //   socket.on("chat_message", (data) => {
-  //     setMessage((prevMessage) => prevMessage + data.response);
-  //   });
+  const handleOk = () => {
+    setDisplay(false);
+  };
 
-  //   return () => {
-  //     // remove the listener when the component unmounts
-  //     socket.off("chat_message");
-  //   };
-  // }, []);
+  const handleCancel = () => {
+    setDisplay(false);
+  };
 
-  // useEffect(() => {
-  //   // display message one character at a time using setInterval
-  //   let index = 0;
-  //   const intervalId = setInterval(() => {
-  //     // add one character to displayedMessage
-  //     setDisplayedMessage((prevMessage) => prevMessage + message.charAt(index));
-  //     index++;
-  //     // clear interval when all characters have been displayed
-  //     if (index >= message.length) {
-  //       clearInterval(intervalId);
-  //     }
-  //   }, 200); // set interval delay, adjust as desired for typing speed
+  useEffect(() => {
+    // add a listener for the chat_message event
+    socket.on("chat_message", (data) => {
+      console.log(data.response);
+      setMessage(prevMessage => prevMessage + data.response);
+    });
+    return () => {
+      // remove the listener when the component unmounts
+      socket.off("chat_message");
+    };
+  }, []);
 
-  //   return () => {
-  //     // clear interval when component unmounts
-  //     clearInterval(intervalId);
-  //   };
-  // }, [message]);
+  useEffect(() => {
+    // display message one character at a time using setInterval
+    let index = 0;
+    const intervalId = setInterval(() => {
+      // add one character to displayedMessage
+      setDisplayedMessage((prevMessage) => prevMessage + message.charAt(index));
+      index++;
+      // clear interval when all characters have been displayed
+      if (index >= message.length) {
+        clearInterval(intervalId);
+      }
+    }, 200); // set interval delay, adjust as desired for typing speed
+
+    return () => {
+      // clear interval when component unmounts
+      clearInterval(intervalId);
+    };
+  }, [message]);
 
   return (
     <div className={styles.container}>
@@ -171,12 +181,12 @@ export default function App() {
             <Emoji text="🃏" />
           </a>
         </div>
-        <div>
+        {/* <div>
           <a href="#" onClick={handleFortuneTelling} className={styles.emoji}>
             <Emoji text="🧿" />
           </a>
-        </div>
-        {/* <div>
+        </div> */}
+        <div>
           <a
             href="#"
             onClick={handleFortuneTellingStreaming}
@@ -184,24 +194,27 @@ export default function App() {
           >
             <Emoji text="🧿" />
           </a>
-        </div> */}
+        </div>
       </div>
-      {/* <Typewriter
+      {/* {display && <Typewriter
         onInit={(typewriter) => {
           typewriter
             .changeDelay("natural")
-            .typeString("首先是The High Priestess。 正位时，这张牌代表着谜团、智慧和神秘。在这个问题中，它可能意味着市场上存在许多未知的因素和隐秘的力量，这些因素可能会对A股的走势产生影响。建议你要保持警惕，密切关注市场动态，并做好必要的准备，以维护你的投资收益。")
+            .typeString(message)
             .callFunction(() => {
               console.log("String typed out!");
             })
-            .pauseFor(2500)
-            .deleteAll()
-            .callFunction(() => {
-              console.log("All strings were deleted");
-            })
+            // .pauseFor(2500)
+            // .deleteAll()
+            // .callFunction(() => {
+            //   console.log("All strings were deleted");
+            // })
             .start();
         }}
-      /> */}
+      /> } */}
+    <Modal title="🧿" open={display} onOk={handleOk} onCancel={handleCancel} footer={null}>
+        <p>{message}</p>
+    </Modal>
     </div>
   );
 }
